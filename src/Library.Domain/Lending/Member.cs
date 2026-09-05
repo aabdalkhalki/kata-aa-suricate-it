@@ -25,6 +25,8 @@ public sealed class Member
 
     public IReadOnlyCollection<Loan> Loans => _loans.AsReadOnly();
 
+    public Money OutstandingPenalties => _loans.Aggregate(Money.Zero, (total, loan) => total + loan.Penalty);
+
     public static Member Register(string name, MembershipType membershipType)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
