@@ -36,12 +36,12 @@ public sealed class Member
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        if (_loans.Count >= Policy.MaxSimultaneousLoans)
+        if (_loans.Count(loan => loan.IsActive) >= Policy.MaxSimultaneousLoans)
         {
             return Result.Failure<Loan>(LendingErrors.LoanQuotaReached);
         }
 
-        if (_loans.Any(loan => loan.BookId == book.Id))
+        if (_loans.Any(loan => loan.IsActive && loan.BookId == book.Id))
         {
             return Result.Failure<Loan>(LendingErrors.AlreadyBorrowed);
         }
@@ -55,6 +55,25 @@ public sealed class Member
 
         var loan = new Loan(LoanId.New(), book.Id, today, today.AddDays(Policy.LoanDurationInDays));
         _loans.Add(loan);
+
+        return Result.Success(loan);
+    }
+
+    public Result<Loan> Return(LoanId loanId, DateOnly today)
+    {
+        var loan = _loans.Find(candidate => candidate.Id == loanId);
+
+        if (loan is null)
+        {
+            return Result.Failure<Loan>(LendingErrors.LoanNotFound);
+        }
+
+        var returning = loan.Return(today);
+
+        if (returning.IsFailure)
+        {
+            return Result.Failure<Loan>(returning.Error);
+        }
 
         return Result.Success(loan);
     }
