@@ -9,4 +9,7 @@
   <Folder Name="/src/">
     <Project Path="src/Library.Domain/Library.Domain.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Library.Domain.Tests/Library.Domain.Tests.csproj" />
+  </Folder>
 </Solution>

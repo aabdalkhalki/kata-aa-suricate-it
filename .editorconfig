@@ -387,3 +387,11 @@ dotnet_naming_style.s_camelcase.required_suffix =
 dotnet_naming_style.s_camelcase.word_separator = 
 dotnet_naming_style.s_camelcase.capitalization = camel_case
 
+
+# CA1716 only guards VB interop, which is not a concern for this codebase.
+[*.cs]
+dotnet_diagnostic.CA1716.severity = none
+
+# Test methods are named as sentences, which CA1707 reads as a naming violation.
+[tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none
