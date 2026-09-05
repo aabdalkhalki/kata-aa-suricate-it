@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/build/">
+    <File Path=".config/dotnet-tools.json" />
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
@@ -9,6 +10,7 @@
   <Folder Name="/src/">
     <Project Path="src/Library.Application/Library.Application.csproj" />
     <Project Path="src/Library.Domain/Library.Domain.csproj" />
+    <Project Path="src/Library.Infrastructure/Library.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Library.Domain.Tests/Library.Domain.Tests.csproj" />
