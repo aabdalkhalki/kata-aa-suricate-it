@@ -1,0 +1,48 @@
+@host = http://localhost:5080
+
+### Register a book with a single copy
+# @name registerBook
+POST {{host}}/api/books
+Content-Type: application/json
+
+{
+  "title": "The Dispossessed",
+  "author": "Ursula K. Le Guin",
+  "copies": 1
+}
+
+### Register a standard member, three loans for twenty-one days
+# @name registerMember
+POST {{host}}/api/members
+Content-Type: application/json
+
+{
+  "name": "Ada Lovelace",
+  "membershipType": "Standard"
+}
+
+### Borrow the only copy
+# @name borrow
+POST {{host}}/api/members/{{registerMember.response.body.$.id}}/loans
+Content-Type: application/json
+
+{
+  "bookId": "{{registerBook.response.body.$.id}}"
+}
+
+### Borrow the same title again, 409 lending.already_borrowed
+POST {{host}}/api/members/{{registerMember.response.body.$.id}}/loans
+Content-Type: application/json
+
+{
+  "bookId": "{{registerBook.response.body.$.id}}"
+}
+
+### Return the loan, the copy goes back on the shelf
+POST {{host}}/api/members/{{registerMember.response.body.$.id}}/loans/{{borrow.response.body.$.id}}/return
+
+### Return it a second time, 409 lending.already_returned
+POST {{host}}/api/members/{{registerMember.response.body.$.id}}/loans/{{borrow.response.body.$.id}}/return
+
+### Outstanding penalties, zero for an on-time return
+GET {{host}}/api/members/{{registerMember.response.body.$.id}}/penalties

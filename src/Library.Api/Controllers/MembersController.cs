@@ -38,8 +38,8 @@ public sealed class MembersController(
     }
 
     [HttpGet("{memberId:guid}/penalties")]
-    [ProducesResponseType<PenaltiesResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<PenaltiesResponse>(StatusCodes.Status200OK, Description = "The total late fees the member currently owes.")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, Description = "No such member.")]
     public async Task<ActionResult<PenaltiesResponse>> Penalties(Guid memberId, CancellationToken cancellationToken)
     {
         var query = new GetOutstandingPenalties(new MemberId(memberId));

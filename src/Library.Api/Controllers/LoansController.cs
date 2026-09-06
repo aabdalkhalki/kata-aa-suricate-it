@@ -11,9 +11,9 @@ namespace Library.Api.Controllers;
 public sealed class LoansController(BorrowBookHandler borrowBook, ReturnBookHandler returnBook) : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType<LoanResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<LoanResponse>(StatusCodes.Status201Created, Description = "The loan was opened and one copy left the shelf.")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, Description = "No such member, or no such book.")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, Description = "The member already holds this title, has reached the loan quota, or no copy is available.")]
     public async Task<ActionResult<LoanResponse>> Borrow(
         Guid memberId,
         BorrowRequest request,
@@ -32,9 +32,9 @@ public sealed class LoansController(BorrowBookHandler borrowBook, ReturnBookHand
     }
 
     [HttpPost("{loanId:guid}/return")]
-    [ProducesResponseType<ReturnResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ReturnResponse>(StatusCodes.Status200OK, Description = "The loan is closed and any late fee is recorded on it.")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, Description = "No such member, or the member holds no loan with that identifier.")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict, Description = "The loan was already returned.")]
     public async Task<ActionResult<ReturnResponse>> Return(
         Guid memberId,
         Guid loanId,

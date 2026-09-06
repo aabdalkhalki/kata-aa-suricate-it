@@ -4,6 +4,7 @@ using Library.Api.Contracts;
 using Library.Api.Validation;
 using Library.Application;
 using Library.Infrastructure;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services
     .AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(connectionString);
@@ -26,6 +28,12 @@ builder.Services.AddScoped<IValidator<BorrowRequest>, BorrowRequestValidator>();
 var app = builder.Build();
 
 app.Services.MigrateDatabase();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
