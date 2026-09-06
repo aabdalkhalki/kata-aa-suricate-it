@@ -14,6 +14,7 @@
     <Project Path="src/Library.Infrastructure/Library.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Library.Api.Tests/Library.Api.Tests.csproj" />
     <Project Path="tests/Library.Domain.Tests/Library.Domain.Tests.csproj" />
   </Folder>
 </Solution>
