@@ -7,7 +7,10 @@ namespace Library.Api.Controllers;
 
 [ApiController]
 [Route("api/members")]
-public sealed class MembersController(RegisterMemberHandler registerMember, GetMemberHandler getMember) : ControllerBase
+public sealed class MembersController(
+    RegisterMemberHandler registerMember,
+    GetMemberHandler getMember,
+    GetOutstandingPenaltiesHandler getOutstandingPenalties) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<MemberResponse>(StatusCodes.Status201Created)]
@@ -31,5 +34,18 @@ public sealed class MembersController(RegisterMemberHandler registerMember, GetM
         return result.IsFailure
             ? this.ProblemFor(result.Error)
             : Ok(result.Value.ToResponse());
+    }
+
+    [HttpGet("{memberId:guid}/penalties")]
+    [ProducesResponseType<PenaltiesResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PenaltiesResponse>> Penalties(Guid memberId, CancellationToken cancellationToken)
+    {
+        var query = new GetOutstandingPenalties(new MemberId(memberId));
+        var result = await getOutstandingPenalties.Handle(query, cancellationToken);
+
+        return result.IsFailure
+            ? this.ProblemFor(result.Error)
+            : Ok(new PenaltiesResponse(result.Value.Amount));
     }
 }
