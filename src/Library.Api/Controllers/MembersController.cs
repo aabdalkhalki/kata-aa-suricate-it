@@ -18,7 +18,8 @@ public sealed class MembersController(
         RegisterMemberRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new RegisterMember(request.Name, request.MembershipType);
+        var membershipType = Enum.Parse<MembershipType>(request.MembershipType, ignoreCase: true);
+        var command = new RegisterMember(request.Name, membershipType);
         var member = await registerMember.Handle(command, cancellationToken);
 
         return CreatedAtAction(nameof(Get), new { memberId = member.Id.Value }, member.ToResponse());
