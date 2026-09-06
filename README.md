@@ -26,10 +26,11 @@ L'API écoute sur http://localhost:5080. Le document OpenAPI est servi sur `/ope
 
 ## Hypothèses
 
-- Un adhérent ne peut pas emprunter deux exemplaires du même titre en même temps.
+- Un adhérent ne peut pas emprunter deux exemplaires du même ouvrage en même temps ; un ouvrage enregistré deux fois compte comme deux ouvrages distincts.
 - Le retard se compte en jours calendaires entiers ; rendre le jour de l'échéance n'est pas un retard.
 - Le plafond de 10 € s'applique par retour, pas par adhérent.
 - Les pénalités s'accumulent ; leur règlement n'est pas dans le périmètre.
+- Une pénalité naît au moment du retour ; un prêt en retard non encore rendu n'en génère pas.
 - Une pénalité impayée ne bloque pas un nouvel emprunt.
 - Les dates sont en UTC ; une bibliothèque réelle utiliserait son fuseau.
 - Les exemplaires sont un compteur sur l'ouvrage, pas des entités individuelles.
@@ -42,7 +43,7 @@ L'API écoute sur http://localhost:5080. Le document OpenAPI est servi sur `/ope
 - La pénalité est calculée et stockée au moment du retour, avec le tarif en vigueur ce jour-là.
 - `Book` et `Member` sont deux agrégats ; un emprunt les modifie tous les deux dans une même transaction EF Core.
 - SQLite avec migrations, pour que le projet se lance sans rien installer. Le `decimal` y est stocké en texte, aucun calcul monétaire n'est fait en SQL.
-- Les erreurs HTTP sont des `ProblemDetails` (400, 404, 409, 500) avec un code métier dans l'extension `code`.
+- Les erreurs HTTP sont des `ProblemDetails` (400, 404, 409, 500) ; les erreurs métier (404, 409) portent en plus un code dans l'extension `code`.
 - Pas de MediatR ni d'AutoMapper : sept handlers et trois mappings s'écrivent à la main.
 
 ## Volontairement hors périmètre
